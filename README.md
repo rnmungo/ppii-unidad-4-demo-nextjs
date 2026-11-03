@@ -115,3 +115,25 @@ Pasos en el panel de Render:
 >
 > El servidor standalone escucha en `0.0.0.0` y respeta la variable `PORT` que asigna Render.
 > Plan Free: el servicio se suspende tras 15 min sin tráfico y la base Free vence a los 30 días.
+
+## Despliegue en Vercel + Neon
+
+Alternativa administrada descrita en el mismo material. **No requiere cambios en el código**:
+Vercel detecta Next.js y usa su propia plataforma de build (no ejecuta el `Dockerfile`), y
+`lib/db.js` sigue leyendo `DATABASE_URL`.
+
+1. **Neon**: crear un proyecto (por ejemplo `todo-vercel`) en una región cercana a la de Vercel.
+   En **Connect**, copiar la cadena **pooled** (host con `-pooler`), recomendada para serverless.
+   Conservar los parámetros que incluye (`sslmode=require`, etc.).
+2. En el **SQL Editor** de Neon, ejecutar el `CREATE TABLE` de `db/init/01-schema.sql`.
+3. **Vercel → Add New → Project**: importar este repositorio, verificar que el Framework Preset
+   sea Next.js y mantener los comandos detectados.
+4. **Settings → Environment Variables**: agregar `DATABASE_URL` con la cadena de Neon, al menos
+   en **Production** (opcionalmente Preview y Development). Si se usa la integración de Neon del
+   Marketplace, comprobar el nombre de la variable que crea: el código espera `DATABASE_URL`.
+5. Generar un nuevo deployment después de guardar o cambiar la variable.
+6. Abrir la URL pública, probar el CRUD y recargar para verificar que los datos persisten en Neon.
+   Ante errores, revisar **Build Logs** y **Runtime Logs**.
+
+> Vercel Hobby está orientado a proyectos personales y no comerciales; Neon Free tiene cuotas
+> (hasta 1 GB por proyecto según el plan vigente).
