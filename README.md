@@ -1,6 +1,6 @@
 # TODO List · Next.js + Material UI + PostgreSQL
 
-Ejemplo didáctico basado en `docs/Material_Complementario_NextJS_PostgreSQL_TODO_List.pdf`.
+Ejemplo didáctico basado en el material complementario "Next.js + PostgreSQL: TODO List".
 Sigue la misma arquitectura del material (App Router, Server Components, Server Actions,
 SQL parametrizado con `pg`), pero la interfaz usa **Material UI** y la base de datos
 corre en **Docker**.
@@ -92,7 +92,7 @@ docker-compose.yml   Servicio PostgreSQL 17
 
 ## Despliegue en Render (Docker)
 
-Basado en `docs/Material_Complementario_Despliegue_NextJS_Render_Vercel.pdf`. El proyecto ya incluye:
+Basado en el material complementario "Despliegue de Next.js con PostgreSQL (Render y Vercel)". El proyecto ya incluye:
 
 - `next.config.mjs` con `output: "standalone"` (genera `.next/standalone/server.js`).
 - `Dockerfile` multi-etapa (`deps` → `builder` → `runner`) con `node:22-alpine`.
