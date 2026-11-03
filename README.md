@@ -89,3 +89,29 @@ docker-compose.yml   Servicio PostgreSQL 17
 
 > El contenedor expone PostgreSQL en el puerto **5433** del host (no 5432) para no chocar con
 > un PostgreSQL instalado localmente.
+
+## Despliegue en Render (Docker)
+
+Basado en `docs/Material_Complementario_Despliegue_NextJS_Render_Vercel.pdf`. El proyecto ya incluye:
+
+- `next.config.mjs` con `output: "standalone"` (genera `.next/standalone/server.js`).
+- `Dockerfile` multi-etapa (`deps` → `builder` → `runner`) con `node:22-alpine`.
+- `.dockerignore` que excluye `node_modules`, `.next`, `.git` y los archivos `.env*` (salvo `.env.example`).
+
+Pasos en el panel de Render:
+
+1. **New → PostgreSQL** (por ejemplo `todo-postgres`, plan Free). Elegir una región.
+2. Conectarse con la **External Database URL** (o el SQL Editor) y ejecutar el `CREATE TABLE`
+   de `db/init/01-schema.sql`.
+3. **New → Web Service**, conectar este repositorio de GitHub, **misma región** que la base,
+   runtime **Docker**, plan Free.
+4. En **Environment** del Web Service, agregar `DATABASE_URL` con la **Internal Database URL**.
+   Guardar y volver a desplegar si no se inicia solo.
+5. Abrir la URL pública y probar el CRUD; recargar para verificar que los datos persisten.
+
+> `DATABASE_URL` solo se exige en tiempo de ejecución: durante `next build` (dentro del
+> Dockerfile) no existe, y `lib/db.js` omite la validación en esa fase. Nunca usar el prefijo
+> `NEXT_PUBLIC_` para esta variable ni incluirla en la imagen o en el repositorio.
+>
+> El servidor standalone escucha en `0.0.0.0` y respeta la variable `PORT` que asigna Render.
+> Plan Free: el servicio se suspende tras 15 min sin tráfico y la base Free vence a los 30 días.
